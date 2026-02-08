@@ -15,23 +15,61 @@
 
 class MyHashSet {
 
-    private boolean[] data;
+//    private boolean[] data;
+//
+//    public MyHashSet() {
+//        data = new boolean[1000001];
+//        
+//    }
+//    
+//    public void add(int key) {
+//        data[key] = true;
+//    }
+//    
+//    public void remove(int key) {
+//        data[key] = false;
+//    }
+//    
+//    public boolean contains(int key) {
+//        return data[key];
+//    }
+	
+	//Optimal solutions
+	
+	private int primaryBuckets = 1000;
+    private int secondaryBuckets = 1000;
+    private boolean[][] storage;
 
     public MyHashSet() {
-        data = new boolean[1000001];
-        
+        storage = new boolean[primaryBuckets][];
     }
-    
+
+    private int getPrimaryHash(int key) {
+        return key % primaryBuckets;
+    }
+
+    private int getSecondaryHash(int key) {
+        return key / secondaryBuckets;
+    }
+
     public void add(int key) {
-        data[key] = true;
+        int p = getPrimaryHash(key);
+        if (storage[p] == null) {
+            storage[p] = new boolean[p == 0 ? secondaryBuckets + 1 : secondaryBuckets];
+        }
+        storage[p][getSecondaryHash(key)] = true;
     }
-    
+
     public void remove(int key) {
-        data[key] = false;
+        int p = getPrimaryHash(key);
+        if (storage[p] != null) {
+            storage[p][getSecondaryHash(key)] = false;
+        }
     }
-    
+
     public boolean contains(int key) {
-        return data[key];
+        int p = getPrimaryHash(key);
+        return storage[p] != null && storage[p][getSecondaryHash(key)];
     }
 }
 
